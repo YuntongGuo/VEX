@@ -2,7 +2,7 @@
 This is the code Write ups for 57249 C
 The autonomous code using Jar Template
 
-## User Control
+# User Control
 
 ```c++
 void usercontrol(void) {
@@ -170,8 +170,8 @@ Then judge whether current side wings is released or retracted.
 If is released, then call Pneumatics off function to retract the wings
 If retracted then call Pneumatics on function to release the wings
 Then change the state of the side.
-## Autonomous
-By [JAR-Template](https://jacksonarearobotics.github.io/JAR-Template/)
+# Autonomous
+Using [JAR-Template](https://jacksonarearobotics.github.io/JAR-Template/)
 Jackson area robotics
 I configure the bot to the template 
 In the autonomous part, I call the function for moving the bot 
@@ -181,11 +181,180 @@ forward for specific distance or Turn an accurate degree.
   chassis.turn_to_angle(90);
 
 ```
+## Far side (4 tribal)
+```c++
+  chassis.drive_max_voltage = 12;
+  chassis.turn_max_voltage = 12;
+  Intake.spin(fwd,10,volt);
+  chassis.drive_distance(-45);
+  Intake.stop();
+  Intake.spin(fwd,-7,volt);
+  chassis.drive_max_voltage = 12;
+  chassis.drive_distance(20);
+  chassis.turn_to_angle(-45);
+  Intake.spin(fwd,12,volt);
+  chassis.drive_max_voltage = 12;
+  chassis.drive_distance(-35);
+  chassis.right_swing_to_angle(-95);
+  // change to -90
+  chassis.drive_distance(-4);
+  PneumaticA.set(true);
+  PneumaticH.set(true);
+  wait(.2, sec);
+  chassis.drive_distance(35,chassis.desired_heading,10,6,1,100,1500);
+  PneumaticA.set(false);
+  PneumaticH.set(false);
+  chassis.drive_distance(-10);
+  chassis.set_heading(0);
+  chassis.turn_max_voltage=8;
+  chassis.turn_to_angle(180);
+  Intake.spin(fwd,-10,volt);
+  chassis.drive_distance(-20,chassis.desired_heading,12,6,1,100,500);
+  Intake.stop();
+```
+set volt for drive and turn.
+intake to hold the tribal
+drive forward, 
+drop the tribal and move backward,
+turn to the bar move forward and grab the triball
+open Pneumatics and push 2 tribal in to goal (include the one dropped)
+move backward turn and drop the triball . 
+extake and push it into goal.
+intake stop.
+```c++
+  chassis.turn_max_voltage = 12;
+  chassis.drive_distance(20);
+  chassis.turn_to_angle(-35);
+  Intake.spin(fwd,12,volt);
+  chassis.drive_distance(-20);
+  chassis.drive_distance(25);
+  chassis.turn_max_voltage = 8;
+  chassis.turn_to_angle(180);
+  Intake.spin(fwd,-12,volt);
+  chassis.drive_distance(-20,chassis.desired_heading,12,6,1,100,600);
+  chassis.turn_max_voltage=12;
+  chassis.drive_distance(20);
+  chassis.right_swing_to_angle(-40);
+  chassis.drive_distance(-50);
+```
+go back and turn to the tribal on the side. 
+move forward to grab it.
+go back, turn to the goal and extake
+push it in.
+move back. turn to the elevation bar.
+move at full speed to touch it.
 
 
 
+## close side
+```c++
+chassis.set_coordinates(0, 0,0);
+  chassis.drive_max_voltage = 12;
+  chassis.turn_max_voltage = 12;
+  Intake.spin(fwd,10,volt);
+  chassis.drive_distance(-7);
+  PneumaticH.set(true);
+  wait(.3, sec);
+  chassis.set_heading(45);
+  //chassis.turn_to_angle(0,8);
+  chassis.drive_distance(10,0,3,3);
+  PneumaticH.set(false);
+  wait(.2,sec);
+```
+SET voltage
+star intake to grab tribal
+move back and expand Pneumatic
+wait expand
+move forwarded and turning to unload
+retract Pneumatic
+```c++
+  chassis.turn_to_angle(60);
+  chassis.drive_distance(-17);
+  chassis.right_swing_to_angle(93);
+  Intake.stop();
+  Intake.spin(fwd,-7,volt);
+  chassis.drive_distance(-20,chassis.desired_heading,10,6,1,100,300);
+  chassis.drive_distance(12);
+```
+turn toward goal.
+move forward
+turn toward the side of goal
+extake and push it in
+move back 
 
+```c++
+  chassis.set_heading(0);
+  chassis.turn_to_angle(125);
+  chassis.drive_distance(-30);
+  chassis.turn_to_angle(-90);
+  chassis.drive_distance(28);
+  chassis.drive_distance(-28);
+  chassis.turn_to_angle(0);
+  chassis.drive_distance(-25);
+  chassis.turn_to_angle(105);
+  chassis.drive_distance(-30,chassis.desired_heading,10,6,1,100,1000);
+```
+move to the elevation bar.
+push the tribal under the bar.
+move back and go to the other side of the bar to touch the elevation bar.
+this is to avoid pass the elevation bar(lead to lose auton)
 
+# Skill
+## Driving Skill
+use the same code as User Control
+
+## Programming Skill
+use a distance sensor to detect the tribal on the puncher. 
+count the number of punches. After 44 punches, move to the other side and expand Pneumatics and push for three times.
+from a different angle.
+```c++
+void auton_skill(){
+  cataMax = CataRotation.angle(deg);
+  chassis.drive_max_voltage = 12;
+  chassis.right_swing_to_angle(-65);
+  PneumaticA.set(true);
+  Catapult.spin(fwd, -100, pct);
+  wait(40, sec);
+  PneumaticA.set(false);
+  Catapult.stop(coast);
+  printf("end\n");
+  chassis.drive_distance(-20);
+  chassis.turn_to_angle(-135);
+  chassis.drive_distance(13);
+  chassis.turn_to_angle(133);
+  chassis.drive_distance(80);
+  chassis.set_heading(0);
+  chassis.right_swing_to_angle(-45);
+  PneumaticA.set(true);
+  PneumaticH.set(true);
+  chassis.drive_distance(15);
+  chassis.right_swing_to_angle(-80);
+  chassis.drive_distance(30,chassis.desired_heading,12,6,1,100,1000);
+  chassis.drive_distance(-20);
+  chassis.drive_distance(30,chassis.desired_heading,12,6,1,100,1000);
+  chassis.drive_distance(-18);
+  PneumaticA.set(false);
+  PneumaticH.set(false);
+  chassis.right_swing_to_angle(180);
+  chassis.drive_max_voltage = 6;
+  chassis.turn_max_voltage = 5;
+  chassis.drive_distance(30);
+  chassis.left_swing_to_angle(-45);
+  PneumaticA.set(true);
+  PneumaticH.set(true);
+  chassis.drive_distance(10);
+  chassis.drive_distance(20,chassis.desired_heading,12,6,1,100,1000);
+  chassis.drive_max_voltage = 12;
+  chassis.drive_distance(-20);
+  chassis.turn_to_angle(-90);
+  chassis.drive_max_voltage = 6;
+  chassis.drive_distance(15);
+  chassis.left_swing_to_angle(0);
+  chassis.drive_max_voltage = 12;
+  chassis.drive_distance(10);
+  chassis.drive_distance(20,chassis.desired_heading,12,6,1,100,1000);
+}
+```
 
 
 
